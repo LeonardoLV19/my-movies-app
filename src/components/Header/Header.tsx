@@ -29,7 +29,8 @@ const Header = () => {
                     <Link 
                     key={href} 
                     href={href} 
-                    className={clsx("text-sm font-medium transition-colors  hover:text-blue-600")}
+                    className={clsx("text-sm font-medium transition-colors  hover:text-blue-600", 
+                        pathname === href ? "text-blue-600 underline" : "text-gray-600")}
                     >
                         {label}
                     </Link>

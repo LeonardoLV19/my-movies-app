@@ -32,6 +32,8 @@ export default function PopularMoviesPage() {
   const router = useRouter();
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const initialize = async () => {
       try {
         let sessionId = localStorage.getItem('tmdb_guest_session');

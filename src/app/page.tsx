@@ -19,6 +19,7 @@ export default function HomePage() {
   const [upcoming, setUpcoming] = useState<Movie[]>([]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const fetchData = async () => {
       const top = await getTopRatedMovies();
       const trend = await getTrendingMovies();

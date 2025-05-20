@@ -31,6 +31,7 @@ export default function MovieDetailsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const loadMovie = async () => {
       setLoading(true);
       let sessionId = localStorage.getItem('tmdb_guest_session');

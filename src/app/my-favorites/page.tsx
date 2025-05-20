@@ -26,24 +26,28 @@ export default function MyFavoritesPage() {
   useEffect(() => {
     const initialize = async () => {
       try {
-        // 1. Obtener o crear sesión
         let session = localStorage.getItem('tmdb_guest_session');
         
         if (!session) {
           const response = await getGuestSession();
           if (!response.success) throw new Error(response.error);
           session = response.sessionId;
-          localStorage.setItem('tmdb_guest_session', session);
+          if (session) {
+            localStorage.setItem('tmdb_guest_session', session);
+          }
         }
-
+  
         setSessionId(session);
-
-        // 2. Obtener favoritos
+  
+        if (!session) {
+          throw new Error('No se pudo obtener la sesión de invitado.');
+        }
+  
         const favoritesResponse = await getFavoritesMovies(session);
         if (!favoritesResponse.success) {
           throw new Error(favoritesResponse.error);
         }
-
+  
         setMovies(favoritesResponse.movies);
       } catch (err: any) {
         setError(err.message || 'Error al cargar favoritos');
@@ -51,21 +55,22 @@ export default function MyFavoritesPage() {
         setLoading(false);
       }
     };
-
+  
     initialize();
   }, []);
+  
 
   const handleRemoveFavorite = async (movieId: number) => {
     if (!sessionId) return;
 
     try {
-      // Actualización optimista
+    
       setMovies(prev => prev.filter(movie => movie.id !== movieId));
       
       await markAsFavorite(movieId, false, sessionId);
     } catch (error) {
       console.error("Error removing favorite:", error);
-      // Recargar si falla
+     
       const response = await getFavoritesMovies(sessionId);
       if (response.success) {
         setMovies(response.movies);

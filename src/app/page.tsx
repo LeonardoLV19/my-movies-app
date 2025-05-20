@@ -1,32 +1,64 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Film, Heart, Star, Clapperboard, TrendingUp } from 'lucide-react';
+import { getTopRatedMovies } from '@/services/Movies/getTopRatedMovies';
+import { getTrendingMovies } from '@/services/Movies/getTrendingMovies';
+import { getUpcomingMovies } from '@/services/Movies/getUpcomingMovies';
 
-export default function Home() {
-  const categories = [
-    { name: 'En Cartelera', path: '/movies/now-playing', icon: <Clapperboard /> },
-    { name: 'Populares', path: '/movies/popular', icon: <TrendingUp /> },
-    { name: 'Mejor Valoradas', path: '/movies/top-rated', icon: <Star /> },
-    { name: 'Mis Favoritas', path: '/movies/my-favorites', icon: <Heart /> }
-  ];
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+}
 
-  return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <h1 className="text-4xl font-bold mb-12 text-center">MovieFlix</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {categories.map((category) => (
-          <Link
-            key={category.path}
-            href={category.path}
-            className="bg-gray-800 p-6 rounded-xl hover:bg-gray-700 transition-colors flex flex-col items-center"
-          >
-            <div className="text-blue-400 mb-3">
-              {category.icon}
+export default function HomePage() {
+  const [topRated, setTopRated] = useState<Movie[]>([]);
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [upcoming, setUpcoming] = useState<Movie[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const top = await getTopRatedMovies();
+      const trend = await getTrendingMovies();
+      const up = await getUpcomingMovies();
+
+      setTopRated(top.results || []);
+      setTrending(trend.results || []);
+      setUpcoming(up.results || []);
+    };
+    fetchData();
+  }, []);
+
+  const renderCarousel = (title: string, movies: Movie[]) => (
+    <div className="mb-10">
+      <h2 className="text-2xl font-bold mb-4 text-white">{title}</h2>
+      <div className="flex gap-4 overflow-x-auto no-scrollbar">
+        {movies.map((movie) => (
+          <Link key={movie.id} href={`/movie/${movie.id}`} className="min-w-[160px]">
+            <div className="relative w-[160px] h-[240px] flex-shrink-0 group">
+              <Image
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                fill
+                className="object-cover rounded-lg group-hover:opacity-80 transition"
+              />
+              <div className="absolute bottom-0 w-full bg-black/60 text-sm text-white p-1 truncate">
+                {movie.title}
+              </div>
             </div>
-            <h2 className="text-xl font-semibold">{category.name}</h2>
           </Link>
         ))}
       </div>
     </div>
+  );
+
+  return (
+    <main className="bg-black min-h-screen p-6">
+      {renderCarousel('🎬 Películas Mejor Calificadas', topRated)}
+      {renderCarousel('🔥 Tendencias de la Semana', trending)}
+      {renderCarousel('🚀 Próximos Estrenos', upcoming)}
+    </main>
   );
 }

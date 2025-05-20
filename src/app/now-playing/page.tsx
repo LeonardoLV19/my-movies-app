@@ -37,31 +37,40 @@ export default function NowPlayingMoviesPage() {
       try {
         let sessionId = localStorage.getItem('tmdb_guest_session');
         let sessionExpired = false;
-
+  
         const expiresAt = localStorage.getItem('tmdb_guest_session_expires');
         if (expiresAt && new Date(expiresAt) < new Date()) {
           sessionExpired = true;
         }
-
+  
         if (!sessionId || sessionExpired) {
           const sessionResponse = await getGuestSession();
           if (!sessionResponse.success) throw new Error(sessionResponse.error);
+  
+          if (!sessionResponse.sessionId) throw new Error('No sessionId returned');
           sessionId = sessionResponse.sessionId;
-          localStorage.setItem('tmdb_guest_session', sessionId);
+  
+          if (sessionId) {
+            localStorage.setItem('tmdb_guest_session', sessionId);
+          }
+          
           localStorage.setItem('tmdb_guest_session_expires', sessionResponse.expiresAt);
         }
-
+  
+        
+        const safeSessionId = sessionId as string;
+  
         const [nowPlayingRes, favoritesRes] = await Promise.all([
           getNowPlayingMovies(),
-          getFavoritesMovies(sessionId)
+          getFavoritesMovies(safeSessionId)
         ]);
-
+  
         setData({
           movies: nowPlayingRes.results.slice(0, 50),
           loading: false,
           error: null
         });
-
+  
         setFavorites(new Set(
           favoritesRes.movies?.map((m: any) => m.id) || []
         ));
@@ -73,9 +82,10 @@ export default function NowPlayingMoviesPage() {
         });
       }
     };
-
+  
     initialize();
   }, []);
+  
 
   const handleFavorite = async (movieId: number) => {
     const sessionId = localStorage.getItem('tmdb_guest_session');

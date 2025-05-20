@@ -1,6 +1,6 @@
 import api from '../api';
 
-interface MovieDetails {
+export interface MovieDetails {
   id: number;
   title: string;
   overview: string;

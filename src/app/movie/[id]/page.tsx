@@ -5,9 +5,11 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { Heart } from 'lucide-react';
 import { getMovieDetails } from '@/services/Movies/getMovieDetails';
+import type { MovieDetails } from '@/services/Movies/getMovieDetails';
 import { getRecommendedMovies } from '@/services/Movies/getRecommendend';
 import { markAsFavorite } from '@/services/Movies/markFavorite';
 import { getFavoritesMovies } from '@/services/Movies/getFavoritesMovies';
+
 
 interface Movie {
   id: number;
@@ -23,7 +25,7 @@ interface Movie {
 
 export default function MovieDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [movie, setMovie] = useState<MovieDetails | null>(null);
   const [favorites, setFavorites] = useState<Set<number>>(new Set());
   const [recommended, setRecommended] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);

@@ -53,7 +53,7 @@ export default function MovieDetailsPage() {
 
       setMovie(movieData);
       setRecommended(recommendedData.results?.slice(0, 10) || []);
-      setFavorites(new Set(favoritesData.results?.map((m: any) => m.id) || []));
+      setFavorites(new Set(favoritesData.movies?.map(m => m.id) || []))
       setLoading(false);
     };
 

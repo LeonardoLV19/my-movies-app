@@ -1,7 +1,7 @@
 // services/Movies/getFavoritesMovies.ts
 import api from "../api";
 
-interface FavoriteMovie {
+export interface FavoriteMovie {
   id: number;
   title: string;
   poster_path: string;

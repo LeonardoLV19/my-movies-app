@@ -62,7 +62,7 @@ export default function PopularMoviesPage() {
         });
 
         setFavorites(new Set(
-          favoritesRes.results?.map((m: any) => m.id) || []
+          favoritesRes.movies?.map((m: any) => m.id) || []
         ));
       } catch (error) {
         setData({

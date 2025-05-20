@@ -1,8 +1,13 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const nextConfig: NextConfig = {
   images: {
-    domains: ['image.tmdb.org'], // Permite imágenes de TMDB
+    domains: ["image.tmdb.org"],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

@@ -7,7 +7,10 @@ export interface MovieDetails {
   poster_path: string;
   release_date: string;
   vote_average: number;
-  // Agrega más campos según necesites
+  backdrop_path: string | null;
+  genres: { id: number; name: string }[];
+  runtime: number;
+  
 }
 
 export const getMovieDetails = async (id: string): Promise<MovieDetails | null> => {
